@@ -240,7 +240,8 @@ async function fetchSongs() {
         songs = songParam.split(',');
     }
     initRecommender(songs); // 初始化推荐器
-    loadSong();
+    await loadSong();
+    audio.pause(); // 确保音频在加载后处于暂停状态
 }
 
 async function loadSong() {
@@ -263,7 +264,7 @@ async function loadSong() {
         cancelable: true
     });
     document.body.dispatchEvent(simulatedClick);
-    tryPlay();
+    audio.pause();
 }
 
 async function tryPlay() {
