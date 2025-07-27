@@ -102,11 +102,9 @@ audio.addEventListener('pause', () => playPauseIcon.setAttribute('d', playPath))
 
 playPauseButton.addEventListener('click', () => {
     if (audio.paused) {
-        audio.play(); // 开始播放
-        playPauseIcon.setAttribute('d', pausePath); // 更改图标为暂停
+        audio.play();
     } else {
-        audio.pause(); // 暂停播放
-        playPauseIcon.setAttribute('d', playPath); // 更改图标为播放
+        audio.pause();
     }
 });
 
@@ -206,16 +204,16 @@ audio.addEventListener('ended', () => {
     if (playMode === 'recommend') {
         updateSongWeight(songs[playIndex], lastProgress * 100);
         playIndex = getRecommendedSongIndex(playIndex);
-        loadSong(); // 加载推荐的下一首歌
+        loadSong();
     } else if (playMode === 'loop') {
-        audio.currentTime = 0; // 重置为开始
-        audio.play(); // 再次播放
+        audio.currentTime = 0;
+        audio.play();
     } else if (playIndex < songs.length - 1) {
-        playIndex++; // 下一首
-        loadSong(); // 加载下一首歌
+        playIndex++;
+        loadSong();
     } else {
-        playIndex = 0; // 返回到第一首
-        loadSong(); // 加载第一首歌
+        playIndex = 0;
+        loadSong();
     }
 });
 
@@ -242,10 +240,7 @@ async function fetchSongs() {
         songs = songParam.split(',');
     }
     initRecommender(songs); // 初始化推荐器
-    await loadSong(); // 加载歌曲
-
-    // 确保音频在加载后处于暂停状态，并设置播放按钮图标为播放状态
-    playPauseIcon.setAttribute('d', playPath); // 设置播放图标
+    loadSong();
 }
 
 async function loadSong() {
@@ -262,9 +257,12 @@ async function loadSong() {
     const urlRes = await fetch(`https://163api.qijieya.cn/song/url/v1?id=${id}&level=jymaster`);
     const urlJson = await urlRes.json();
     audio.src = urlJson.data[0].url;
-
-    // 不要在这里调用 audio.pause()
+    
+    // 移除自动播放的尝试
+    playPauseIcon.setAttribute('d', playPath); // 确保显示播放图标
 }
+
+// 移除 tryPlay() 函数，因为不再需要它
 
 async function tryPlay() {
     try {
@@ -276,4 +274,4 @@ async function tryPlay() {
     }
 }
 
-fetchSongs();“”
+fetchSongs();
