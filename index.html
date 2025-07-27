@@ -24,7 +24,8 @@
 
 	.card {
 	  position: relative;
-	  width: 260px;
+	  width: 100%; /* 改为百分比宽度 */
+      max-width: 500px; /* 最大宽度限制 */
 	  height: 110px;
 	  background: rgba(255, 255, 255, 0.05) url('') no-repeat center/cover;
 	  border-radius: 10px;
@@ -34,14 +35,14 @@
 	}
 
 	.card::before {
-	  backdrop-filter: blur(10px);
+	  backdrop-filter: blur(5px);
 	  content: '';
 	  position: absolute;
 	  top: 0;
 	  left: 0;
 	  width: 100%;
 	  height: 100%;
-	  background: var(--overlay-color);
+background: rgba(0, 0, 0, 0);
 	  z-index: 0;
 	}
 
@@ -74,7 +75,7 @@
 
 	.texts {
 	  flex-grow: 1;
-	  width: 175px;
+	  width: calc(100% - 70px); /* 自动计算宽度（总宽-头像宽-间距） */
 	  overflow: hidden;
 	}
 
@@ -128,18 +129,38 @@
 	  border-radius: 1px;
 	}
 
-	.controls {
-	  color: var(--text-color);
-	  display: flex;
-	  position: absolute;
-	  top: 50%; 
-	  transform: translateY(7%);
-	  bottom: 3px;
-	  left: 0;
-	  width: 100%;
-	  justify-content: center;
-	}
+.controls {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* 三栏：左右等宽，中间自适应 */
+  align-items: center;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(7%);
+}
+/* 左侧音量控制 */
+.left-controls {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+  padding-left: 10px;
+}
 
+/* 中间播放按钮组 */
+.center-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 右侧循环按钮 */
+.right-controls {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 30px;
+}
 	.volume {
 	  height: 100%;
 	  width: 50px;
@@ -153,10 +174,10 @@
 	  opacity: 1;
 	}
 
-	.air {
-	  height: 100%;
-	  width: 54px;
-	}
+/* 移除原有的.air占位元素 */
+.air {
+  display: none;
+}
 
 /* 所有控制按钮默认样式 */
 .controls svg {
@@ -249,6 +270,7 @@
 	  100% { transform: scaleY(0.1); }
 	}
 
+
 	.pfp.animate, .pfp img.animate {
 	  animation: fadeCover 0.6s ease;
 	}
@@ -299,6 +321,7 @@
       </div>
     </div>
     <div class="controls">
+    	<div class="left-controls">
       <svg id="volume_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" height="20px" width="24px" class="volume_button">
         <path d="M18 9C18 9 18.5 9.9 18.5 12C18.5 14.1 18 15 18 15"></path> <path d="M1.95863 8.57679C2.24482 8.04563 2.79239 7.53042 3.33997 7.27707C3.9393 6.99979 4.62626 6.99979 6.00018 6.99979C6.51225 6.99979 6.76828 6.99979 7.01629 6.95791C7.26147 6.9165 7.50056 6.84478 7.72804 6.74438C7.95815 6.64283 8.1719 6.50189 8.59941 6.22002L8.81835 6.07566C11.3613 4.39898 12.6328 3.56063 13.7001 3.92487C13.9048 3.9947 14.1029 4.09551 14.2798 4.21984C15.2025 4.86829 15.2726 6.37699 15.4128 9.3944C15.4647 10.5117 15.5001 11.4679 15.5001 11.9998C15.5001 12.5317 15.4647 13.4879 15.4128 14.6052C15.2726 17.6226 15.2025 19.1313 14.2798 19.7797C14.1029 19.9041 13.9048 20.0049 13.7001 20.0747C12.6328 20.4389 11.3613 19.6006 8.81834 17.9239L8.59941 17.7796C8.1719 17.4977 7.95815 17.3567 7.72804 17.2552C7.50056 17.1548 7.26147 17.0831 7.01629 17.0417C6.76828 16.9998 6.51225 16.9998 6.00018 16.9998C4.62626 16.9998 3.9393 16.9998 3.33997 16.7225C2.79239 16.4692 2.24482 15.9539 1.95863 15.4228C1.6454 14.8414 1.60856 14.237 1.53488 13.0282C1.52396 12.849 1.51525 12.6722 1.50928 12.4998"></path>
       </svg>
@@ -306,6 +329,8 @@
         <div class="slider"><div class="green" id="volume-fill"></div></div>
         <div class="circle" id="volume-circle"></div>
       </div>
+      </div>
+      <div class="center-controls">
  <svg id="prev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" height="24px" width="24px">
     <path clip-rule="evenodd" d="M12.848 9.248a1.2 1.2 0 0 0-1.696-1.696l-3.6 3.6a1.2 1.2 0 0 0 0 1.696l3.6 3.6a1.2 1.2 0 0 0 1.696-1.696L11.297 13.2H15.6a1.2 1.2 0 1 0 0-2.4h-4.303l1.551-1.552Z" fill-rule="evenodd"></path>
 </svg>
@@ -317,10 +342,12 @@
     <!-- 完全对称于prev按钮的next按钮 -->
     <path clip-rule="evenodd" d="M11.152 14.752a1.2 1.2 0 0 0 1.696 1.696l3.6-3.6a1.2 1.2 0 0 0 0-1.696l-3.6-3.6a1.2 1.2 0 0 0-1.696 1.696L12.703 10.8H8.4a1.2 1.2 0 1 0 0 2.4h4.303l-1.551 1.552Z" fill-rule="evenodd"></path>
 </svg>
-      <div class="air"></div>
+   </div>
+   <div class="right-controls">
       <svg id="loop_toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="none" height="20px" width="24px">
         <path d="M18 4L21 7M21 7L18 10M21 7H17C16.0707 7 15.606 7 15.2196 7.07686C13.6329 7.39249 12.3925 8.63288 12.0769 10.2196C12 10.606 12 11.0707 12 12C12 12.9293 12 13.394 11.9231 13.7804C11.6075 15.3671 10.3671 16.6075 8.78036 16.9231C8.39397 17 7.92931 17 7 17H3M18 20L21 17M21 17L18 14M21 17H17C16.0707 17 15.606 17 15.2196 16.9231C15.1457 16.9084 15.0724 16.8917 15 16.873M3 7H7C7.92931 7 8.39397 7 8.78036 7.07686C8.85435 7.09158 8.92758 7.1083 9 7.12698"></path>
       </svg>
+    </div>
     </div>
     <div class="time" id="time-bar">
       <div class="elapsed" id="elapsed"></div>
