@@ -1,6 +1,8 @@
-#☃
+
+
 https://music-xi-black.vercel.app/?playlist=13494662713&theme=dark&themeColor=%231d1d5c
-<iframe src="https://music-xi-black.vercel.app/?playlist=13494662713&theme=dark&themeColor=%231d1d5c" width="100%" height="110" style="border: none; border-radius: 0px;" frameborder="0"></iframe>
+<iframe src="😁" width="100%" height="110" style="border: none; border-radius: 0px;" frameborder="0"></iframe>
+
 # NetEase-music-card
 
 更加美观、简洁、易用的网易云外链播放器
