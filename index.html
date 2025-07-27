@@ -111,9 +111,9 @@
 
 	.time {
 	  width: 90%;
-	  background-color: var(--slider-bg-color);
-	  height: 7px;
-	  border-radius: 3px;
+	  background-color: rgba(168, 168, 228, 0.5);
+	  height: 3.4px;
+	  border-radius: 1px;
 	  position: absolute;
 	  left: 5%;
 	  bottom: 27px;
@@ -125,7 +125,7 @@
 	  width: 42%;
 	  background-color: var(--theme-color);
 	  height: 100%;
-	  border-radius: 3px;
+	  border-radius: 1px;
 	}
 
 	.controls {
@@ -158,15 +158,33 @@
 	  width: 54px;
 	}
 
-	.controls svg {
-	  cursor: pointer;
-	  transition: 0.1s;
-	  margin-bottom: 5px;
-	}
+/* 默认所有按钮（不包括循环按钮） */
+.controls svg:not(#loop_toggle) {
+  fill: rgba(168, 168, 228, 0.8); /* 默认颜色（80% 透明度） */
+  stroke: none; /* 确保没有描边 */
+  cursor: pointer;
+  transition: fill 0.1s;
+  margin-bottom: 5px;
+}
 
-	.controls svg:hover {
-	  color: var(--theme-color);
-	}
+/* 鼠标悬停时（不包括循环按钮） */
+.controls svg:not(#loop_toggle):hover {
+  fill: var(--text-color); /* 悬停时恢复默认文本颜色 */
+}
+
+/* 单独处理循环按钮（使用 stroke 而不是 fill） */
+#loop_toggle {
+  stroke: rgba(168, 168, 228, 0.8); /* 默认颜色（80% 透明度） */
+  fill: none; /* 确保没有填充色 */
+  cursor: pointer;
+  transition: stroke 0.1s;
+  margin-bottom: 5px;
+}
+
+/* 循环按钮悬停时 */
+#loop_toggle:hover {
+  stroke: var(--text-color); /* 悬停时恢复默认文本颜色 */
+}
 
 	.volume .slider {
 	  height: 4px;
@@ -198,8 +216,8 @@
 	}
 
 	.timetext {
-	  color: var(--text-color);
-	  font-size: 10px;
+	  color: rgba(168, 168, 228, 0.8);
+	  font-size: 8px;
 	  position: absolute;
 	  bottom: 3.5px;
 	}
