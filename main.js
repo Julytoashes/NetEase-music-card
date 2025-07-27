@@ -169,10 +169,10 @@ document.addEventListener('mouseup', () => isVolumeDragging = false);
 document.getElementById('loop_toggle').addEventListener('click', () => {
     if (playMode === 'none') {
         playMode = 'loop';
-        document.getElementById('loop_toggle').style.color = validColor;
+        document.getElementById('loop_toggle').style.color = '#ba5757';
     } else if (playMode === 'loop') {
         playMode = 'recommend';
-        document.getElementById('loop_toggle').style.color = '#ff0000';
+        document.getElementById('loop_toggle').style.color = '#1d1d5c';
     } else {
         playMode = 'none';
         document.getElementById('loop_toggle').style.color = '';
