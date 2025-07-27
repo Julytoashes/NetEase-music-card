@@ -79,7 +79,7 @@
 	}
 
 	.title-1 {
-	  color: var(--text-color);
+	  color: #1d1d5c;
 	  font-size: 26px;
 	  font-weight: bolder;
 	  white-space: nowrap;
@@ -88,7 +88,7 @@
 	}
 
 	.title-2 {
-	  color: var(--text-color);
+	  color: #1d1d5c;
 	  font-size: 15px;
 	  font-weight: bold;
 	  white-space: nowrap;
@@ -158,33 +158,28 @@
 	  width: 54px;
 	}
 
-/* 默认所有按钮（不包括循环按钮） */
+/* 所有控制按钮默认样式 */
+.controls svg {
+  cursor: pointer;
+  transition: all 0.1s;
+  margin-bottom: 5px;
+}
+
+/* 普通按钮（填充色控制） */
 .controls svg:not(#loop_toggle) {
-  fill: rgba(168, 168, 228, 0.8); /* 默认颜色（80% 透明度） */
-  stroke: none; /* 确保没有描边 */
-  cursor: pointer;
-  transition: fill 0.1s;
-  margin-bottom: 5px;
+  fill: rgba(168, 168, 228, 0.8); /* 默认淡紫色 */
+  stroke: none;
 }
+.controls svg:not(#loop_toggle):hover { fill: var(--text-color); }
+.controls svg:not(#loop_toggle):active { fill: #1d1d5c !important; } /* 点击深靛蓝 */
 
-/* 鼠标悬停时（不包括循环按钮） */
-.controls svg:not(#loop_toggle):hover {
-  fill: var(--text-color); /* 悬停时恢复默认文本颜色 */
-}
-
-/* 单独处理循环按钮（使用 stroke 而不是 fill） */
+/* 循环按钮（描边控制） */
 #loop_toggle {
-  stroke: rgba(168, 168, 228, 0.8); /* 默认颜色（80% 透明度） */
-  fill: none; /* 确保没有填充色 */
-  cursor: pointer;
-  transition: stroke 0.1s;
-  margin-bottom: 5px;
+  stroke: rgba(168, 168, 228, 0.8); /* 默认淡紫色描边 */
+  fill: none;
 }
-
-/* 循环按钮悬停时 */
-#loop_toggle:hover {
-  stroke: var(--text-color); /* 悬停时恢复默认文本颜色 */
-}
+#loop_toggle:hover { stroke: var(--text-color); }
+#loop_toggle:active { stroke: #1d1d5c !important; } /* 点击深靛蓝描边 */
 
 	.volume .slider {
 	  height: 4px;
