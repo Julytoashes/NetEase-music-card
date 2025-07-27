@@ -20,7 +20,7 @@ const volumeSlider = volume.querySelector('.slider');
 const timeBar = document.getElementById('time-bar');
 const card = document.querySelector('.card');
 let playIndex = 0;
-let playMode = 'none'; // none, loop, recommend
+let playMode = 'recommend'; // none, loop, recommend
 let songs = [];
 let isVolumeOpen = false;
 let isDragging = false;
@@ -64,7 +64,7 @@ if (theme.toLowerCase() === 'light') {
     document.documentElement.style.setProperty('--overlay-color', 'rgba(255, 255, 255, 0.5)');
 } else {
     document.documentElement.style.setProperty('--bg-color', '#191414');
-    document.documentElement.style.setProperty('--text-color', '#ffffff');
+    document.documentElement.style.setProperty('--text-color', '#1d1d5c');
     document.documentElement.style.setProperty('--card-bg-color', '#151515');
     document.documentElement.style.setProperty('--slider-bg-color', '#5e5e5e');
     document.documentElement.style.setProperty('--overlay-color', 'rgba(0, 0, 0, 0.5)');
@@ -240,7 +240,12 @@ async function fetchSongs() {
         songs = songParam.split(',');
     }
     initRecommender(songs); // 初始化推荐器
-    loadSong();
+
+    // 设置默认播放模式为随机（recommend）
+    playMode = 'recommend'; // 设置模式
+    document.getElementById('loop_toggle').style.color = '#1d1d5c'; // 更新UI颜色
+
+    loadSong(); // 加载歌曲
 }
 
 async function loadSong() {
