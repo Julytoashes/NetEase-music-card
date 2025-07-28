@@ -313,15 +313,26 @@ async function loadSong() {
     const urlRes = await fetch(`https://163api.qijieya.cn/song/url/v1?id=${id}&level=jymaster`);
     const urlJson = await urlRes.json();
     audio.src = urlJson.data[0].url;
-    audio.onloadedmetadata = () => {
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.setPositionState({
-                duration: audio.duration,
-                position: audio.currentTime,
-                playbackRate: audio.playbackRate
-            });
-        }
-    };
+       audio.onloadedmetadata = () => {
+           if ('mediaSession' in navigator) {
+               navigator.mediaSession.setPositionState({
+                   duration: audio.duration,
+                   position: 0, // 明确设置为0
+                   playbackRate: 1.0
+               });
+           }
+       };
+       // 确保在播放时也更新
+       audio.addEventListener('play', () => {
+           if ('mediaSession' in navigator) {
+               navigator.mediaSession.setPositionState({
+                   duration: audio.duration,
+                   position: audio.currentTime,
+                   playbackRate: 1.0
+               });
+           }
+       });
+  
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: song.name,
