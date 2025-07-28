@@ -97,9 +97,19 @@ function checkTextOverflow() {
     }
 }
 
-audio.addEventListener('play', () => playPauseIcon.setAttribute('d', pausePath));
-audio.addEventListener('pause', () => playPauseIcon.setAttribute('d', playPath));
+audio.addEventListener('play', () => {
+    playPauseIcon.setAttribute('d', pausePath);
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = "playing";
+    }
+});
 
+audio.addEventListener('pause', () => {
+    playPauseIcon.setAttribute('d', playPath);
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = "paused";
+    }
+});
 playPauseButton.addEventListener('click', () => {
     if (audio.paused) {
         audio.play();
@@ -223,8 +233,16 @@ audio.addEventListener('timeupdate', () => {
     timeNow.innerText = formatTime(audio.currentTime);
     timeFull.innerText = formatTime(audio.duration);
     lastProgress = percent; // 跟踪收听进度
+    
+    // 更新 Media Session 的播放位置
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.setPositionState({
+            duration: audio.duration,
+            position: audio.currentTime,
+            playbackRate: audio.playbackRate
+        });
+    }
 });
-
 function formatTime(t) {
     const m = Math.floor(t / 60);
     const s = Math.floor(t % 60);
@@ -295,7 +313,15 @@ async function loadSong() {
     const urlRes = await fetch(`https://163api.qijieya.cn/song/url/v1?id=${id}&level=jymaster`);
     const urlJson = await urlRes.json();
     audio.src = urlJson.data[0].url;
-    
+    audio.onloadedmetadata = () => {
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setPositionState({
+                duration: audio.duration,
+                position: audio.currentTime,
+                playbackRate: audio.playbackRate
+            });
+        }
+    };
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: song.name,
