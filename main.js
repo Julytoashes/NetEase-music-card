@@ -235,14 +235,14 @@ audio.addEventListener('timeupdate', () => {
     lastProgress = percent; // 跟踪收听进度
     
     // 更新 Media Session 的播放位置
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.setPositionState({
-            duration: audio.duration,
-            position: audio.currentTime,
-            playbackRate: audio.playbackRate
-        });
-    }
-});
+  if ('mediaSession' in navigator && audio.duration) { // 检查 duration 是否可用
+            navigator.mediaSession.setPositionState({
+                duration: audio.duration,
+                position: audio.currentTime,
+                playbackRate: audio.playbackRate
+            });
+        }
+    });
 function formatTime(t) {
     const m = Math.floor(t / 60);
     const s = Math.floor(t % 60);
@@ -313,25 +313,26 @@ async function loadSong() {
     const urlRes = await fetch(`https://163api.qijieya.cn/song/url/v1?id=${id}&level=jymaster`);
     const urlJson = await urlRes.json();
     audio.src = urlJson.data[0].url;
-       audio.onloadedmetadata = () => {
-           if ('mediaSession' in navigator) {
-               navigator.mediaSession.setPositionState({
-                   duration: audio.duration,
-                   position: 0, // 明确设置为0
-                   playbackRate: 1.0
-               });
-           }
-       };
-       // 确保在播放时也更新
-       audio.addEventListener('play', () => {
-           if ('mediaSession' in navigator) {
-               navigator.mediaSession.setPositionState({
-                   duration: audio.duration,
-                   position: audio.currentTime,
-                   playbackRate: 1.0
-               });
-           }
-       });
+       // 重置音频状态
+    audio.currentTime = 0; // 重置到0
+    audio.pause(); // 确保初始状态是暂停
+    elapsed.style.width = '0%'; // 重置进度条
+    timeNow.innerText = '0:00'; // 重置当前时间
+    timeFull.innerText = '0:00'; // 重置总时间
+
+    audio.onloadedmetadata = () => {
+        // 更新总时间
+        timeFull.innerText = formatTime(audio.duration);
+   if ('mediaSession' in navigator && audio.duration) { // 检查 duration 是否可用
+            navigator.mediaSession.setPositionState({
+                duration: audio.duration,
+                position: 0, // 初始位置为 0
+                playbackRate: 1.0
+            });
+        }
+        audio.play(); // 加载完成后自动播放
+    };
+  
   
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
