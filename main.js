@@ -244,8 +244,41 @@ async function fetchSongs() {
     // 设置默认播放模式为随机（recommend）
     playMode = 'recommend'; // 设置模式
     document.getElementById('loop_toggle').style.color = '#1d1d5c'; // 更新UI颜色
-
+setupMediaControls();
     loadSong(); // 加载歌曲
+}
+
+// 设置 Media Session 控制（上一首/下一首/播放/暂停）
+function setupMediaControls() {
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', () => {
+            audio.play();
+        });
+        
+        navigator.mediaSession.setActionHandler('pause', () => {
+            audio.pause();
+        });
+        
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+            // 调用你的 "上一首" 逻辑
+            if (playIndex > 0) playIndex--;
+            else playIndex = songs.length - 1;
+            loadSong();
+        });
+        
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+            // 调用你的 "下一首" 逻辑
+            if (playMode === 'recommend') {
+                updateSongWeight(songs[playIndex], lastProgress * 100);
+                playIndex = getRecommendedSongIndex(playIndex);
+            } else if (playIndex < songs.length - 1) {
+                playIndex++;
+            } else {
+                playIndex = 0;
+            }
+            loadSong();
+        });
+    }
 }
 
 async function loadSong() {
@@ -255,7 +288,7 @@ async function loadSong() {
     const song = detailJson.songs[0];
     animateChange();
     title.innerText = song.name;
-    artist.innerText = song.ar[0].name;
+    artist.innerText = song.ar.map(artist => artist.name).join(', ');
     cover.src = song.al.picUrl;
     card.style.backgroundImage = `url(${song.al.picUrl})`;
     checkTextOverflow();
@@ -263,20 +296,28 @@ async function loadSong() {
     const urlJson = await urlRes.json();
     audio.src = urlJson.data[0].url;
     
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.name,
+            artist: song.ar.map(artist => artist.name).join(', '),
+            album: song.al.name,
+            artwork: [
+       { src: song.al.picUrl.replace('http://', 'https://') + '?param=96x96', sizes: '96x96' },
+       { src: song.al.picUrl.replace('http://', 'https://') + '?param=128x128', sizes: '128x128' },
+       { src: song.al.picUrl.replace('http://', 'https://') + '?param=192x192', sizes: '192x192' },
+       { src: song.al.picUrl.replace('http://', 'https://') + '?param=256x256', sizes: '256x256' },
+       { src: song.al.picUrl.replace('http://', 'https://') + '?param=384x384', sizes: '384x384' },
+       { src: song.al.picUrl.replace('http://', 'https://') + '?param=512x512', sizes: '512x512' },
+   ]
+        });
+    }
+    
     // 移除自动播放的尝试
     playPauseIcon.setAttribute('d', playPath); // 确保显示播放图标
 }
 
 // 移除 tryPlay() 函数，因为不再需要它
 
-async function tryPlay() {
-    try {
-        await audio.play();
-        console.log('音频播放成功');
-    } catch (error) {
-        console.warn('音频播放失败', error);
-        setTimeout(tryPlay, 100);
-    }
-}
+
 
 fetchSongs();
