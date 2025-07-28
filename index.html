@@ -155,14 +155,14 @@ background: rgba(0, 0, 0, 0);
   gap: 8px;
   flex-grow: 1;
   /* 移除绝对定位，改用margin调整 */
-  margin-left: -20px; /* 向左偏移15px */
+  margin-left: -32px; /* 向左偏移15px */
 }
 
 .right-controls {
   display: flex;
   justify-content: flex-end;
   min-width: 50px; /* 给右侧控制区域一个最小宽度 */
-  padding-right: 30px; /* 恢复30px右边距 */
+  padding-right: 21px; /* 恢复30px右边距 */
 }
 	.volume {
 	  height: 100%;
@@ -206,11 +206,11 @@ background: rgba(0, 0, 0, 0);
 #loop_toggle:active { stroke: #1d1d5c !important; } /* 点击深靛蓝描边 */
 
 	.volume .slider {
-	  height: 4px;
+	  height: 1.5px;
 	  background-color: var(--slider-bg-color);
 	  width: 100%;
-	  border-radius: 2px;
-	  margin-top: 8px;
+	  border-radius: 0.8px;
+	  margin-top: 0;
 	  position: relative;
 	  cursor: pointer;
 	}
@@ -219,14 +219,14 @@ background: rgba(0, 0, 0, 0);
 	  background-color: var(--theme-color);
 	  height: 100%;
 	  width: 100%;
-	  border-radius: 2px;
+	  border-radius: 0.8px;
 	}
 
 	.volume .circle {
 	  background-color: var(--text-color);
-	  height: 8px;
-	  width: 8px;
-	  border-radius: 4px;
+	  height: 3px;
+	  width: 3px;
+	  border-radius: 1.5px;
 	  position: absolute;
 	  right: 0;
 	  top: 12%;
