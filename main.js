@@ -321,21 +321,34 @@ async function loadSong() {
     timeFull.innerText = '0:00'; // 重置总时间
 
  audio.onloadedmetadata = () => {
-    timeFull.innerText = formatTime(audio.duration);
+        timeFull.innerText = formatTime(audio.duration);
+    };
 
-    // 延迟设置 Media Session 状态
-    setTimeout(() => {
-        if ('mediaSession' in navigator && audio.duration) {
-            navigator.mediaSession.setPositionState({
-                duration: audio.duration,
-                position: 0, 
-                playbackRate: 1.0
-            });
+    audio.oncanplay = () => {
+        if ('mediaSession' in navigator) {
+            // 1. 限制 position 的范围
+            const position = Math.max(0, Math.min(audio.currentTime, audio.duration));
+
+            // 2. 检查 duration 的有效性
+            if (audio.duration > 0 && !isNaN(audio.duration)) {
+                navigator.mediaSession.setPositionState({
+                    duration: audio.duration,
+                    position: position,
+                    playbackRate: audio.playbackRate
+                });
+            }
         }
-        audio.play(); // 保持在设置状态后播放
-    }, 8000); // 延迟 500ms，你可以根据需要调整
-};
-  
+        // 4. 在 audio.play() 的 Promise 的 then 方法中设置 positionState (如果 3 不生效)
+        audio.play().then(() => {
+            if ('mediaSession' in navigator && audio.duration > 0 && !isNaN(audio.duration)) {
+                navigator.mediaSession.setPositionState({
+                    duration: audio.duration,
+                    position: 0, //或 audio.currentTime 如果需要反映实际开始时间
+                    playbackRate: audio.playbackRate
+                });
+             }
+        });
+  };
   
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
