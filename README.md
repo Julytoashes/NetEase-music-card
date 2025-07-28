@@ -1,6 +1,4 @@
-
-
-https://music-xi-black.vercel.app/?playlist=13494662713&theme=dark&themeColor=%231d1d5c
+修改:纯随机，默认随机
 <iframe src="😁" width="100%" height="110" style="border: none; border-radius: 0px;" frameborder="0"></iframe>
 
 # NetEase-music-card
