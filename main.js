@@ -320,18 +320,21 @@ async function loadSong() {
     timeNow.innerText = '0:00'; // 重置当前时间
     timeFull.innerText = '0:00'; // 重置总时间
 
-    audio.onloadedmetadata = () => {
-        // 更新总时间
-        timeFull.innerText = formatTime(audio.duration);
-   if ('mediaSession' in navigator && audio.duration) { // 检查 duration 是否可用
+ audio.onloadedmetadata = () => {
+    timeFull.innerText = formatTime(audio.duration);
+
+    // 延迟设置 Media Session 状态
+    setTimeout(() => {
+        if ('mediaSession' in navigator && audio.duration) {
             navigator.mediaSession.setPositionState({
                 duration: audio.duration,
-                position: 0, // 初始位置为 0
+                position: 0, 
                 playbackRate: 1.0
             });
         }
-        audio.play(); // 加载完成后自动播放
-    };
+        audio.play(); // 保持在设置状态后播放
+    }, 800); // 延迟 500ms，你可以根据需要调整
+};
   
   
     if ('mediaSession' in navigator) {
