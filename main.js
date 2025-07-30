@@ -243,6 +243,68 @@ audio.addEventListener('timeupdate', () => {
             });
         }
     });
+    
+    
+// 添加 postMessage 监听器
+window.addEventListener('message', (event) => {
+    if (event.data.type === 'getPlaybackState') {
+        window.parent.postMessage({
+            type: 'playbackState',
+            currentTime: audio.currentTime,
+            isPlaying: !audio.paused,
+            songId: songs[playIndex],
+            duration: audio.duration || 0
+        }, '*');
+    } else if (event.data.type === 'setPlaybackState') {
+        const { currentTime, isPlaying, songId } = event.data;
+        if (songId && songId !== songs[playIndex]) {
+            playIndex = songs.indexOf(songId);
+            if (playIndex === -1) {
+                playIndex = 0;
+            }
+            loadSong().then(() => {
+                audio.onloadedmetadata = () => {
+                    timeFull.innerText = formatTime(audio.duration);
+                    if (currentTime >= 0 && currentTime <= audio.duration) {
+                        audio.currentTime = currentTime;
+                    }
+                    if (isPlaying) {
+                        audio.play().then(() => {
+                            playPauseIcon.setAttribute('d', pausePath);
+                            window.parent.postMessage({ type: 'playbackStatus', isPlaying: true }, '*');
+                        }).catch(() => {
+                            playPauseIcon.setAttribute('d', playPath);
+                            window.parent.postMessage({ type: 'playbackStatus', isPlaying: false }, '*');
+                        });
+                    } else {
+                        audio.pause();
+                        playPauseIcon.setAttribute('d', playPath);
+                        window.parent.postMessage({ type: 'playbackStatus', isPlaying: false }, '*');
+                    }
+                };
+            });
+        } else {
+            if (currentTime >= 0 && currentTime <= audio.duration) {
+                audio.currentTime = currentTime;
+            }
+            if (isPlaying) {
+                audio.play().then(() => {
+                    playPauseIcon.setAttribute('d', pausePath);
+                    window.parent.postMessage({ type: 'playbackStatus', isPlaying: true }, '*');
+                }).catch(() => {
+                    playPauseIcon.setAttribute('d', playPath);
+                    window.parent.postMessage({ type: 'playbackStatus', isPlaying: false }, '*');
+                });
+            } else {
+                audio.pause();
+                playPauseIcon.setAttribute('d', playPath);
+                window.parent.postMessage({ type: 'playbackStatus', isPlaying: false }, '*');
+            }
+        }
+    }
+});
+    
+    
 function formatTime(t) {
     const m = Math.floor(t / 60);
     const s = Math.floor(t % 60);
@@ -299,6 +361,7 @@ function setupMediaControls() {
     }
 }
 
+// 修改 loadSong 函数以支持封面图和播放状态
 async function loadSong() {
     const id = songs[playIndex];
     const detail = await fetch(`https://163api.qijieya.cn/song/detail?ids=${id}`);
@@ -313,58 +376,59 @@ async function loadSong() {
     const urlRes = await fetch(`https://163api.qijieya.cn/song/url/v1?id=${id}&level=jymaster`);
     const urlJson = await urlRes.json();
     audio.src = urlJson.data[0].url;
-       // 重置音频状态
-    audio.currentTime = 0; // 重置到0
-    audio.pause(); // 确保初始状态是暂停
-    elapsed.style.width = '0%'; // 重置进度条
-    timeNow.innerText = '0:00'; // 重置当前时间
-    timeFull.innerText = '0:00'; // 重置总时间
 
- audio.onloadedmetadata = () => {
+    // 重置音频状态
+    audio.currentTime = 0;
+    audio.pause();
+    elapsed.style.width = '0%';
+    timeNow.innerText = '0:00';
+    timeFull.innerText = '0:00';
+
+    audio.onloadedmetadata = () => {
         timeFull.innerText = formatTime(audio.duration);
     };
 
     audio.oncanplay = () => {
-        if ('mediaSession' in navigator) {
-            // 1. 限制 position 的范围
-            const position = Math.max(0, Math.min(audio.currentTime, audio.duration));
-
-            // 2. 检查 duration 的有效性
-            if (audio.duration > 0 && !isNaN(audio.duration)) {
-                navigator.mediaSession.setPositionState({
-                    duration: audio.duration,
-                    position: position,
-                    playbackRate: audio.playbackRate
-                });
-            }
+        if ('mediaSession' in navigator && audio.duration > 0 && !isNaN(audio.duration)) {
+            navigator.mediaSession.setPositionState({
+                duration: audio.duration,
+                position: audio.currentTime,
+                playbackRate: audio.playbackRate
+            });
         }
-        // 4. 在 audio.play() 的 Promise 的 then 方法中设置 positionState (如果 3 不生效)
+        // 自动播放（根据父页面指令决定）
         audio.play().then(() => {
-            if ('mediaSession' in navigator && audio.duration > 0 && !isNaN(audio.duration)) {
-                navigator.mediaSession.setPositionState({
-                    duration: audio.duration,
-                    position: 0, //或 audio.currentTime 如果需要反映实际开始时间
-                    playbackRate: audio.playbackRate
-                });
-             }
+            playPauseIcon.setAttribute('d', pausePath);
+        }).catch(() => {
+            playPauseIcon.setAttribute('d', playPath);
         });
-  };
-  
+    };
+
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: song.name,
             artist: song.ar.map(artist => artist.name).join(', '),
             album: song.al.name,
             artwork: [
-       { src: song.al.picUrl.replace('http://', 'https://') + '?param=96x96', sizes: '96x96' },
-       { src: song.al.picUrl.replace('http://', 'https://') + '?param=128x128', sizes: '128x128' },
-       { src: song.al.picUrl.replace('http://', 'https://') + '?param=192x192', sizes: '192x192' },
-       { src: song.al.picUrl.replace('http://', 'https://') + '?param=256x256', sizes: '256x256' },
-       { src: song.al.picUrl.replace('http://', 'https://') + '?param=384x384', sizes: '384x384' },
-       { src: song.al.picUrl.replace('http://', 'https://') + '?param=512x512', sizes: '512x512' },
-   ]
+                { src: song.al.picUrl.replace('http://', 'https://') + '?param=96x96', sizes: '96x96' },
+                { src: song.al.picUrl.replace('http://', 'https://') + '?param=128x128', sizes: '128x128' },
+                { src: song.al.picUrl.replace('http://', 'https://') + '?param=192x192', sizes: '192x192' },
+                { src: song.al.picUrl.replace('http://', 'https://') + '?param=256x256', sizes: '256x256' },
+                { src: song.al.picUrl.replace('http://', 'https://') + '?param=384x384', sizes: '384x384' },
+                { src: song.al.picUrl.replace('http://', 'https://') + '?param=512x512', sizes: '512x512' },
+            ]
         });
     }
+
+    // 通知父页面歌曲信息（封面图、标题等）
+    window.parent.postMessage({
+        type: 'songInfo',
+        songId: id,
+        title: song.name,
+        artist: song.ar.map(artist => artist.name).join(', '),
+        coverUrl: song.al.picUrl.replace('http://', 'https://') + '?param=256x256'
+    }, '*');
+}
     
     // 移除自动播放的尝试
     playPauseIcon.setAttribute('d', playPath); // 确保显示播放图标
