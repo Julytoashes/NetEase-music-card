@@ -1,4 +1,4 @@
-修改:纯随机，默认随机
+修改:纯随机，默认随机，通知栏显示歌曲信息
 <iframe src="😁" width="100%" height="110" style="border: none; border-radius: 0px;" frameborder="0"></iframe>
 
 # NetEase-music-card
