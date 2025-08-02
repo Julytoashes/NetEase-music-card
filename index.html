@@ -80,7 +80,7 @@ background: rgba(0, 0, 0, 0);
 	}
 
 	.title-1 {
-	  color: #1d1d5c;
+	  color: transparent; /* 完全透明 */
 	  font-size: 26px;
 	  font-weight: bolder;
 	  white-space: nowrap;
@@ -89,7 +89,7 @@ background: rgba(0, 0, 0, 0);
 	}
 
 	.title-2 {
-	  color: #1d1d5c;
+	  color: transparent; /* 完全透明 */
 	  font-size: 15px;
 	  font-weight: bold;
 	  white-space: nowrap;
@@ -112,7 +112,7 @@ background: rgba(0, 0, 0, 0);
 
 	.time {
 	  width: 90%;
-	  background-color: rgba(168, 168, 228, 0.5);
+	  color: transparent; /* 完全透明 */
 	  height: 3.4px;
 	  border-radius: 1px;
 	  position: absolute;
@@ -124,7 +124,7 @@ background: rgba(0, 0, 0, 0);
 
 	.elapsed {
 	  width: 42%;
-	  background-color: var(--theme-color);
+	  color: transparent; /* 完全透明 */
 	  height: 100%;
 	  border-radius: 1px;
 	}
@@ -192,23 +192,23 @@ background: rgba(0, 0, 0, 0);
 
 /* 普通按钮（填充色控制） */
 .controls svg:not(#loop_toggle) {
-  fill: rgba(168, 168, 228, 0.8); /* 默认淡紫色 */
+  fill: transparent; /* 完全透明填充 */
   stroke: none;
 }
-.controls svg:not(#loop_toggle):hover { fill: var(--text-color); }
-.controls svg:not(#loop_toggle):active { fill: #1d1d5c !important; } /* 点击深靛蓝 */
+.controls svg:not(#loop_toggle):hover { fill: transparent; /* 完全透明填充 */ }
+.controls svg:not(#loop_toggle):active { fill: transparent !important; /* 点击时保持透明 */ } /* 点击深靛蓝 */
 
 /* 循环按钮（描边控制） */
 #loop_toggle {
-  stroke: rgba(168, 168, 228, 0.8); /* 默认淡紫色描边 */
+  stroke: transparent; /* 完全透明描边 */
   fill: none;
 }
-#loop_toggle:hover { stroke: var(--text-color); }
-#loop_toggle:active { stroke: #1d1d5c !important; } /* 点击深靛蓝描边 */
+#loop_toggle:hover { stroke: transparent; /* 悬停时保持透明 */ }
+#loop_toggle:active { stroke: transparent !important; /* 点击时保持透明 */ } /* 点击深靛蓝描边 */
 
 .volume .slider {
   height: 3px; /* 调细滑条 */
-  background-color: var(--slider-bg-color);
+  background-color: transparent; /* 完全透明滑条背景 */
   width: 100%;
   border-radius: 2px;
   position: relative;
@@ -217,7 +217,7 @@ background: rgba(0, 0, 0, 0);
 }
 
 .volume .slider .green {
-  background-color: var(--theme-color);
+  background-color: transparent; /* 完全透明音量填充 */
   height: 100%;
   width: 100%;
   border-radius: 2px;
@@ -225,7 +225,7 @@ background: rgba(0, 0, 0, 0);
 
 /* 音量滑点样式 */
 .volume .circle {
-  background-color: var(--text-color);
+  background-color: transparent; /* 完全透明滑点 */
   height: 6px; /* 调小滑点 */
   width: 6px;
   border-radius: 50%;
@@ -241,10 +241,11 @@ background: rgba(0, 0, 0, 0);
 .volume .circle:hover {
   height: 8px;
   width: 8px;
+  background-color: transparent; /* 悬停时保持透明 */
 }
 
 	.timetext {
-	  color: rgba(168, 168, 228, 0.8);
+	  color: transparent; /* 完全透明 */
 	  font-size: 8px;
 	  position: absolute;
 	  bottom: 3.5px;
@@ -319,6 +320,9 @@ background: rgba(0, 0, 0, 0);
   #playpause-icon {
     stroke-width: 1.5;
   }
+  
+  
+  
   
   </style>
 </head>
