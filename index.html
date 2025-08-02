@@ -122,7 +122,7 @@ background: rgba(0, 0, 0, 0);
 	  bottom: 27px;
 	  cursor: pointer; 
 	 user-select: none;
-	background: rgba(0, 0, 0, 0.3); /* 黑色半透明 */
+	background: rgba(255, 255, 255, 0.5); /* 黑色半透明 */
   filter: blur(0.5px); /* 轻微模糊模拟毛玻璃 */
 	}
 
@@ -131,7 +131,7 @@ background: rgba(0, 0, 0, 0);
 	  color: transparent; /* 完全透明 */
 	  height: 100%;
 	  border-radius: 1px;
-	background: rgba(255, 255, 255, 0.3); /* 白色半透明以区分进度 */
+	background: rgba(0, 0, 0, 0.3); /* 白色半透明以区分进度 */
 	filter: blur(1px); /* 轻微模糊 */
 	}
 
@@ -198,13 +198,13 @@ background: rgba(0, 0, 0, 0);
 
 /* 普通按钮（填充色控制） */
 .controls svg:not(#loop_toggle) {
-  fill: rgba(0, 0, 0, 0.05); /* 黑色半透明填充 */
+  fill: rgba(0, 0, 0, 0.3); /* 黑色半透明填充 */
   filter: blur(0.5px); /* 轻微模糊模拟毛玻璃 */
   stroke: none;
 }
-.controls svg:not(#loop_toggle):hover { fill: rgba(0, 0, 0, 0.05); /* 黑色半透明填充 */
+.controls svg:not(#loop_toggle):hover { fill: rgba(0, 0, 0, 0.3); /* 黑色半透明填充 */
   filter: blur(0.5px); /* 轻微模糊模拟毛玻璃 */ }
-.controls svg:not(#loop_toggle):active { fill: rgba(0, 0, 0, 0.3) !important; /* 更浅黑色 */
+.controls svg:not(#loop_toggle):active { fill: rgba(255, 255, 255, 0.5) !important; /* 更浅黑色 */
   filter: blur(0.5px); } /* 点击深靛蓝 */
 
 /* 循环按钮（描边控制） */
@@ -396,6 +396,7 @@ background: rgba(0, 0, 0, 0);
   <script src="recommend.js"></script>
   <script src="main.js"></script>
 </body>
+
 
 
 
