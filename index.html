@@ -12,7 +12,7 @@
 	  font-weight: bold;
 	}
 	body {
-	  background-color: var(--bg-color);
+	  background-color: transparent; /* 悬停时保持透明 */
 	  margin: 0;
 	  height: 100vh;
 	  display: flex;
@@ -22,29 +22,30 @@
 	  font-family: 'AlimamaShuHeiTi', sans-serif;
 	}
 
-	.card {
-	  position: relative;
-	  width: 100%; /* 改为百分比宽度 */
-      max-width: 500px; /* 最大宽度限制 */
-	  height: 110px;
-	  background: rgba(255, 255, 255, 0.05) url('') no-repeat center/cover;
-	  border-radius: 10px;
-	  padding: 10px;
-	  overflow: hidden;
-	  transition: background-image 0.5s ease;
-	}
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 110px;
+  background: transparent; /* 移除背景色和图片 */
+  border-radius: 10px;
+  padding: 10px;
+  overflow: hidden;
+  transition: background-image 0.5s ease;
+}
 
-	.card::before {
-	  backdrop-filter: blur(5px);
-	  content: '';
-	  position: absolute;
-	  top: 0;
-	  left: 0;
-	  width: 100%;
-	  height: 100%;
-background: rgba(0, 0, 0, 0);
-	  z-index: 0;
-	}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('') no-repeat center/cover; /* 背景图片移到伪元素 */
+  opacity: 0.3; /* 降低图片不透明度，增加透明感 */
+  backdrop-filter: blur(5px); /* 保留模糊效果 */
+  z-index: 0;
+}
 
 	.card > * {
 	  position: relative;
@@ -80,7 +81,8 @@ background: rgba(0, 0, 0, 0);
 	}
 
 	.title-1 {
-	  color: transparent; /* 完全透明 */
+	  color: rgba(0, 0, 0, 0.05); /* 黑色半透明 */
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.3); /* 模拟模糊效果 */
 	  font-size: 26px;
 	  font-weight: bolder;
 	  white-space: nowrap;
@@ -89,7 +91,8 @@ background: rgba(0, 0, 0, 0);
 	}
 
 	.title-2 {
-	  color: transparent; /* 完全透明 */
+	  color: rgba(0, 0, 0, 0.05); /* 黑色半透明 */
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.3); /* 模拟模糊效果 */
 	  font-size: 15px;
 	  font-weight: bold;
 	  white-space: nowrap;
@@ -120,6 +123,8 @@ background: rgba(0, 0, 0, 0);
 	  bottom: 27px;
 	  cursor: pointer; 
 	 user-select: none;
+	background: rgba(0, 0, 0, 0.05); /* 黑色半透明 */
+  filter: blur(1px); /* 轻微模糊模拟毛玻璃 */
 	}
 
 	.elapsed {
@@ -127,6 +132,8 @@ background: rgba(0, 0, 0, 0);
 	  color: transparent; /* 完全透明 */
 	  height: 100%;
 	  border-radius: 1px;
+	background: rgba(255, 255, 255, 0.3); /* 白色半透明以区分进度 */
+	filter: blur(1.5px); /* 轻微模糊 */
 	}
 
 .controls {
@@ -192,23 +199,30 @@ background: rgba(0, 0, 0, 0);
 
 /* 普通按钮（填充色控制） */
 .controls svg:not(#loop_toggle) {
-  fill: transparent; /* 完全透明填充 */
+  fill: rgba(0, 0, 0, 0.05); /* 黑色半透明填充 */
+  filter: blur(0.5px); /* 轻微模糊模拟毛玻璃 */
   stroke: none;
 }
-.controls svg:not(#loop_toggle):hover { fill: transparent; /* 完全透明填充 */ }
-.controls svg:not(#loop_toggle):active { fill: transparent !important; /* 点击时保持透明 */ } /* 点击深靛蓝 */
+.controls svg:not(#loop_toggle):hover { fill: rgba(0, 0, 0, 0.05); /* 黑色半透明填充 */
+  filter: blur(0.5px); /* 轻微模糊模拟毛玻璃 */ }
+.controls svg:not(#loop_toggle):active { fill: rgba(0, 0, 0, 0.3) !important; /* 更浅黑色 */
+  filter: blur(0.5px); } /* 点击深靛蓝 */
 
 /* 循环按钮（描边控制） */
 #loop_toggle {
-  stroke: transparent; /* 完全透明描边 */
+  stroke: rgba(0, 0, 0, 0.05); /* 黑色半透明描边 */
+  filter: blur(0.5px); /* 轻微模糊 */
   fill: none;
 }
-#loop_toggle:hover { stroke: transparent; /* 悬停时保持透明 */ }
-#loop_toggle:active { stroke: transparent !important; /* 点击时保持透明 */ } /* 点击深靛蓝描边 */
+#loop_toggle:hover { stroke: rgba(0, 0, 0, 0.05);
+  filter: blur(0.5px); }
+#loop_toggle:active { stroke: rgba(0, 0, 0, 0.3) !important;
+  filter: blur(0.5px); } /* 点击深靛蓝描边 */
 
 .volume .slider {
   height: 3px; /* 调细滑条 */
-  background-color: transparent; /* 完全透明滑条背景 */
+  background: rgba(0, 0, 0, 0.05); /* 黑色半透明 */
+  filter: blur(0.5px); /* 轻微模糊 */
   width: 100%;
   border-radius: 2px;
   position: relative;
@@ -217,7 +231,8 @@ background: rgba(0, 0, 0, 0);
 }
 
 .volume .slider .green {
-  background-color: transparent; /* 完全透明音量填充 */
+  background: rgba(0, 0, 0, 0.3); /* 黑色半透明 */
+  filter: blur(0.5px); /* 轻微模糊 */
   height: 100%;
   width: 100%;
   border-radius: 2px;
@@ -225,7 +240,8 @@ background: rgba(0, 0, 0, 0);
 
 /* 音量滑点样式 */
 .volume .circle {
-  background-color: transparent; /* 完全透明滑点 */
+  background: rgba(0, 0, 0, 0.3); /* 黑色半透明滑点 */
+  filter: blur(0.5px);
   height: 6px; /* 调小滑点 */
   width: 6px;
   border-radius: 50%;
@@ -241,11 +257,13 @@ background: rgba(0, 0, 0, 0);
 .volume .circle:hover {
   height: 8px;
   width: 8px;
-  background-color: transparent; /* 悬停时保持透明 */
+  background: rgba(0, 0, 0, 0.3);
+  filter: blur(0.5px);
 }
 
 	.timetext {
-	  color: transparent; /* 完全透明 */
+	  color: rgba(0, 0, 0, 0.05); /* 黑色半透明 */
+  text-shadow: 0 0 0.5px rgba(0, 0, 0, 0.3); /* 模拟模糊效果 */
 	  font-size: 8px;
 	  position: absolute;
 	  bottom: 3.5px;
