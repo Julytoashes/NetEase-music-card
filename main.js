@@ -191,8 +191,7 @@ document.getElementById('loop_toggle').addEventListener('click', () => {
 
 document.getElementById('next').addEventListener('click', () => {
     if (playMode === 'recommend') {
-        updateSongWeight(songs[playIndex], lastProgress * 100);
-        playIndex = getRecommendedSongIndex(playIndex);
+        playIndex = recommender.getNextSongIndex();
     } else if (playIndex < songs.length - 1) {
         playIndex++;
     } else {
@@ -212,8 +211,7 @@ document.getElementById('prev').addEventListener('click', () => {
 
 audio.addEventListener('ended', () => {
     if (playMode === 'recommend') {
-        updateSongWeight(songs[playIndex], lastProgress * 100);
-        playIndex = getRecommendedSongIndex(playIndex);
+        playIndex = recommender.getNextSongIndex();
         loadSong();
     } else if (playMode === 'loop') {
         audio.currentTime = 0;
@@ -249,21 +247,42 @@ function formatTime(t) {
     return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+async function fetchAllSongs(playlistId) {
+    let allSongs = [];
+    let offset = 0;
+    const limit = 500; // 每次请求500首（API限制）
+
+    while (true) {
+        const res = await fetch(
+            `https://163api.qijieya.cn/playlist/track/all?id=${playlistId}&limit=${limit}&offset=${offset}`
+        );
+        const json = await res.json();
+
+        if (!json.songs || json.songs.length === 0) break; // 没有更多歌曲了
+
+        allSongs.push(...json.songs.map(s => s.id));
+        offset += limit;
+
+        // 如果返回数量 < limit，说明加载完毕
+        if (json.songs.length < limit) break;
+    }
+
+    return allSongs;
+}
+
 async function fetchSongs() {
     if (playlistParam) {
-        const res = await fetch(`https://163api.qijieya.cn/playlist/track/all?id=${playlistParam}&limit=5000&offset=0`);
-        const json = await res.json();
-        songs = json.songs.map(s => s.id);
+        songs = await fetchAllSongs(playlistParam); // 分页加载完整歌单
+        console.log("成功加载歌曲数量:", songs.length); // 调试用
     } else if (songParam) {
         songs = songParam.split(',');
     }
-    initRecommender(songs); // 初始化推荐器
 
-    // 设置默认播放模式为随机（recommend）
-    playMode = 'recommend'; // 设置模式
-    document.getElementById('loop_toggle').style.color = '#1d1d5c'; // 更新UI颜色
-setupMediaControls();
-    loadSong(); // 加载歌曲
+    initRecommender(songs); // 初始化洗牌推荐器
+    playMode = 'recommend'; // 默认随机模式
+    document.getElementById('loop_toggle').style.color = '#1d1d5c';
+    setupMediaControls();
+    loadSong();
 }
 
 // 设置 Media Session 控制（上一首/下一首/播放/暂停）
@@ -285,10 +304,8 @@ function setupMediaControls() {
         });
         
         navigator.mediaSession.setActionHandler('nexttrack', () => {
-            // 调用你的 "下一首" 逻辑
             if (playMode === 'recommend') {
-                updateSongWeight(songs[playIndex], lastProgress * 100);
-                playIndex = getRecommendedSongIndex(playIndex);
+                playIndex = recommender.getNextSongIndex();
             } else if (playIndex < songs.length - 1) {
                 playIndex++;
             } else {
