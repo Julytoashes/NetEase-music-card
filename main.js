@@ -251,7 +251,7 @@ function formatTime(t) {
 
 async function fetchSongs() {
     if (playlistParam) {
-        const res = await fetch(`https://163api.qijieya.cn/playlist/track/all?id=${playlistParam}&limit=100&offset=0`);
+        const res = await fetch(`https://163api.qijieya.cn/playlist/track/all?id=${playlistParam}&limit=5000&offset=0`);
         const json = await res.json();
         songs = json.songs.map(s => s.id);
     } else if (songParam) {
