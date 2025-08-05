@@ -1,42 +1,35 @@
-class RandomRecommender {
+class ShuffleRecommender {
     constructor(songIds) {
-        this.songIds = songIds;
-        console.log('纯随机推荐器初始化：', { songIds });
+        this.originalSongs = [...songIds];
+        this.shuffledSongs = [];
+        this.currentIndex = 0;
+        this.shuffle();
     }
 
-    getNextSongIndex(currentIndex) {
-        if (this.songIds.length <= 1) return 0;
-        
-        let nextIndex;
-        let attempts = 0;
-        const MAX_ATTEMPTS = 3; // 减少尝试次数，因为不需要计算权重
-        
-        do {
-            nextIndex = Math.floor(Math.random() * this.songIds.length);
-            attempts++;
-        } while (nextIndex === currentIndex && attempts < MAX_ATTEMPTS);
-        
-        if (nextIndex === currentIndex) {
-            nextIndex = (currentIndex + 1) % this.songIds.length;
+    shuffle() {
+        this.shuffledSongs = [...this.originalSongs];
+        for (let i = this.shuffledSongs.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.shuffledSongs[i], this.shuffledSongs[j]] = [this.shuffledSongs[j], this.shuffledSongs[i]];
         }
-        
-        return nextIndex;
+        this.currentIndex = 0;
+    }
+
+    getNextSongIndex() {
+        if (this.currentIndex >= this.shuffledSongs.length) {
+            this.shuffle();
+        }
+        const songId = this.shuffledSongs[this.currentIndex];
+        this.currentIndex++;
+        return this.originalSongs.indexOf(songId);
     }
 }
 
 let recommender = null;
 
 function initRecommender(songIds) {
-    recommender = new RandomRecommender(songIds);
+    recommender = new ShuffleRecommender(songIds);
 }
 
-function updateSongWeight(songId, progress) {
-    // 纯随机版本不需要此功能
-}
 
-function getRecommendedSongIndex(currentIndex) {
-    if (recommender) {
-        return recommender.getNextSongIndex(currentIndex);
-    }
-    return (currentIndex + 1) % songs.length;
-}
+
